@@ -48,9 +48,7 @@
                 <div class="input-group">
                     <input type="text" class="form-control" name="username" value="<?php echo $name;?>" readonly>
                     <input type="password" class="form-control <?php echo $invalid; ?>" placeholder="Old Password" name="old_pass">
-                    <div class='invalid-feedback'><?php echo $message; ?></div>
                     <input type="password" class="form-control <?php echo $invalid; ?>" placeholder="New Password" name="new_pass">
-                    <div class='invalid-feedback'><?php echo $message; ?></div>
                     <button class="btn btn-danger" type="submit">Change</button>
                 </div>
             </form> 
