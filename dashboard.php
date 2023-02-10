@@ -31,7 +31,7 @@
                     <a class="nav-link" href="./dashboard/settings.php">Settings</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="./logout.php">Logout</a>
+                    <a class="nav-link" href="./action/logout.php">Logout</a>
                 </li>
             </ul>
         </nav>

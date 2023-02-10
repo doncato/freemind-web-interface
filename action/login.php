@@ -7,7 +7,7 @@
         session_start();
         $username = filter_var($_POST["username"], FILTER_SANITIZE_STRING);
         $password = filter_var($_POST["password"], FILTER_SANITIZE_STRING);
-        require_once("./src/locked/class/admin.php");
+        require_once("../src/locked/class/admin.php");
 
         $auth = new Admin();
         $isLoggedIn = $auth->processLogin($username, $password);
@@ -16,13 +16,13 @@
         }
     } else {
         unset($_SESSION["errorMessage"]);
-        header("Location: ./index.php");
+        header("Location: ../index.php");
         exit();
     }
 
     if (!empty($_SESSION["login"])) {
-        header("Location: ./dashboard.php");
+        header("Location: ../dashboard.php");
     } else {
-        header("Location: ./index.php");
+        header("Location: ../index.php");
     }
 ?>

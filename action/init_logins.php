@@ -5,7 +5,7 @@
 
     session_start();
 
-    require_once ("./src/locked/class/admin.php");
+    require_once ("../src/locked/class/admin.php");
 
     $username = "doncato";
     $password = "doncato";

@@ -65,6 +65,8 @@
                 $this->bindQueryParams($stmt, $paramType, $paramArray);
             }
             $stmt->execute();
+            $result = $stmt->get_result();
+            return $result;
         }
 
         public function bindQueryParams($stmt, $paramType, $paramArray=array())

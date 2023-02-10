@@ -15,6 +15,22 @@
             $this->ds = new DataSource();
         }
 
+        public function checkLogin($username, $password)
+        {
+            $query = "SELECT * FROM logins WHERE username = ?";
+            $paramType = "s";
+            $paramArray = array(
+                $username,
+            );
+            $queryResult = $this->ds->select($query, $paramType, $paramArray);
+            if (! empty($queryResult)) {
+                if (password_verify($password, $queryResult[0]["password"])) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
         public function processLogin($username, $password)
         {
             $query = "SELECT * FROM logins WHERE username = ?";
@@ -29,7 +45,6 @@
                     return true;
                 }
             }
-            return false;
         }
 
         public function changePassword($username, $old_password, $new_password)
@@ -42,14 +57,15 @@
             $queryResult = $this->ds->select($query, $paramType, $paramArray);
             if (! empty($queryResult)) {
                 if (password_verify($old_password, $queryResult[0]["password"])) {
+                    $passwordHash = password_hash($new_password, PASSWORD_DEFAULT);
                     $query = "UPDATE logins SET password = ? WHERE username = ?";
                     $paramType = "ss";
                     $paramArray = array(
-                        $new_password,
+                        $passwordHash,
                         $username,
                     );
-                    $queryResult = $this->ds->execute($query, $paramType, $paramArray);
-                    return $queryResult;
+                    $this->ds->execute($query, $paramType, $paramArray);
+                    return $this->checkLogin($username, $new_password);
                 }
             }
         }

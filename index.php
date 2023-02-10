@@ -31,19 +31,14 @@
             </p>
         </div>
         <div class="container">
-            <form action="./login.php" method='post' class='needs-validation'>
-                <div class='row'>
-                    <div class='col-5'>
-                        <input type="text" class="form-control <?php echo $invalid; ?>" id="username" placeholder="Username" name="username">
-                        <div class='invalid-feedback'><?php echo $message; ?></div>
-                    </div>
-                    <div class='col-5'>
-                        <input type="password" class="form-control <?php echo $invalid; ?>", id="password" placeholder="Password" name="password">
-                        <div class='invalid-feedback'><?php echo $message; ?></div>
-                    </div>
-                    <div class='col-2'>
-                        <button type="submit" class="btn btn-primary">Login</button>
-                    </div>
+            <form action="./action/login.php" method='post' class='needs-validation'>
+                <div class='input-group'>
+                    <input type="text" class="form-control <?php echo $invalid; ?>" id="username" placeholder="Username" name="username">
+                    <span class='invalid-feedback'><?php echo $message; ?></span>
+                    <input type="password" class="form-control <?php echo $invalid; ?>", id="password" placeholder="Password" name="password">
+                    <span class='invalid-feedback'><?php echo $message; ?></span>
+                    <button type="submit" class="btn btn-primary">Login</button>
+                </div>
             </form>
         </div>
 
