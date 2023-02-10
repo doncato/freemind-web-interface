@@ -43,6 +43,7 @@
                         <th>Title</th>
                         <th>Description</th>
                         <th>Deadline</th>
+                        <th>Delete</th>
                     </tr>
                 </thead>
                 <tbody id="table">

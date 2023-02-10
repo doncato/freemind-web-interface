@@ -132,12 +132,32 @@ function insertNew(xml, next) {
         }
         regis.appendChild(nextEle)
 
-        httpPost("./api/update.php", doc);
+        httpPost("./api/update.php", doc, true);
     }
 }
 
 // END ADD NEW
+// START DELETE ENTRY
+function deleteEntry(obj) {
+    httpGet("./api/fetch.php", removeEntry, obj.id);
+}
 
+function removeEntry(xml, id) {
+    if (xml.startsWith("<?xml version=\"1.0\" encoding=\"UTF-8\"?>")) {
+        var parser = new DOMParser();
+        var doc = parser.parseFromString(xml, "text/xml");
+        var regis = doc.getElementsByTagName("registry")[0]
+
+        for (const e of regis.getElementsByTagName("entry")) {
+            if (id === e.getAttribute("id")) {
+                regis.removeChild(e)
+            }
+        }
+
+        httpPost("./api/update.php", doc, true);
+    }
+}
+// END DELETE ENTRY
 
 function httpGet(reqURL, handler, passon) {
     var xhr = new XMLHttpRequest();
@@ -155,13 +175,16 @@ function httpGet(reqURL, handler, passon) {
     xhr.send( null );
 }
 
-function httpPost(reqURL, payload) {
+function httpPost(reqURL, payload, update) {
     var xhr = new XMLHttpRequest();
     xhr.open( "POST", reqURL, true);
     xhr.onload = (e) => {
         if (xhr.readyState === 4) {
             if (xhr.status === 200) {
                 console.log("Another Success");
+                if (update) {
+                    httpGet("./api/fetch.php", mapOutcome);
+                }
             } else {
                 console.error(xhr.statusText);
             }
@@ -183,10 +206,11 @@ function fillTable(element, xdoc) {
         dueDate.setTime(due*1000);
         dateString = dueDate.toLocaleString('de-DE');
 
-        content += `<tr>
+        content += `<tr id="${e.getAttribute('id')}">
             <td>${e.getElementsByTagName("name")[0].innerHTML}</td>
             <td>${e.getElementsByTagName("description")[0].innerHTML}</td>
             <td>${dateString}</td>
+            <td><button type="button" class="btn-close" onclick="deleteEntry(this.parentElement.parentElement)"></button></td>
         </tr>`;
     }
     element.innerHTML = content;
