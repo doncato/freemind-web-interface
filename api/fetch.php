@@ -20,7 +20,7 @@
     if (!empty($_SESSION["login"])) {
         $file_loc = "../users/".$_SESSION["login"].".xml";
         if (file_exists($file_loc)) {
-            header($_SERVER["SERVER_PROTOCOL"] . " 200 OK");
+            http_response_code(200);
             header("Content-Type: application/octet-stream");
             header("Content-Transfer-Encoding: Binary");
             header("Content-Length:".filesize($file_loc));
@@ -29,12 +29,19 @@
 
             exit();
         } else {
-            http_response_code(404);
-            header("Content-Type: text/plain");
-            echo("404 - Not Found");
+            $new_file = fopen($file_loc, "w") or die ("Couldn't open file");
+            $content = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><registry version=\"1.0\"></registry>";
+            fwrite($new_file, $content);
+            fclose($new_file);
 
-            session_destroy();
-            exit();
+            http_response_code(201);
+            header("Content-Type: text/plain");
+            header("Content-Type: application/octet-stream");
+            header("Content-Transfer-Encoding: Binary");
+            header("Content-Length:".filesize($file_loc));
+            header("Content-Disposition: attachment; filename=".$_SESSION["login"].".xml");
+            readfile($file_loc);
+
         }
     } else {
         http_response_code(403);

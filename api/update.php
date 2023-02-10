@@ -19,7 +19,12 @@
     
     if (!empty($_SESSION["login"])) {
         $file_loc = "../users/".$_SESSION["login"].".xml";
-        echo("To be implemented");
+        $payload = file_get_contents("php://input");
+        $file = fopen($file_loc, "w") or die ("Couldn't open file");
+        fwrite($file, $payload);
+        fclose($file);
+
+        http_response_code(200);
 
     } else {
         http_response_code(403);
