@@ -43,7 +43,6 @@
         </nav>
         <div class="container">
             <h4>Change Password</h4>
-            <p>You will be logged out and redirected to the login page!</p>
             <form action="../action/change_password.php" method='post' class='needs-validation'>
                 <div class="input-group">
                     <input type="text" class="form-control" name="username" value="<?php echo $name;?>" readonly>
