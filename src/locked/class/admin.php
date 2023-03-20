@@ -15,6 +15,60 @@
             $this->ds = new DataSource();
         }
 
+        function generate_secure_random_string($length)
+        {
+            $random_string = '';
+            for($i = 0; $i < $length; $i++) {   
+                $number = random_int(0, 36);
+                $character = base_convert($number, 10, 36);
+                $random_string .= $character;
+            }
+            return $random_string;
+        }
+        
+        public function createSession($username)
+        {
+            $session_id = $this->generate_secure_random_string(18);
+            $expires = date('c', time()+(15*60));
+
+            $query = "INSERT INTO sessions (username, session, expires) VALUES (?,?,?)";
+            $paramType = "sss";
+            $paramArray = array(
+                $username,
+                $session_id,
+                $expires,
+            );
+            $queryResult = $this->ds->insert($query, $paramType, $paramArray);
+            return $queryResult;
+        }
+
+        public function extendSession($username, $session_id)
+        {
+            $expires = date('c', time()+(15*60));
+
+            $query = "UPDATE sessions SET expires = ? WHERE username = ? AND session = ?";
+            $paramType = "sss";
+            $paramArray = array(
+                $expires,
+                $username,
+                $session_id,
+            );
+            $queryResult = $this->ds->execute($query, $paramType, $paramArray);
+            return $queryResult;
+        }
+
+        public function deleteSession($username, $session_id)
+        {
+            $query = "DELETE FROM sessions WHERE username = ? AND session = ?";
+            $paramType = "ss";
+            $paramArray = array(
+                $username,
+                $session_id,
+            );
+            $queryResult = $this->ds->execute($query, $paramType, $paramArray);
+            return $queryResult;
+        }
+
         public function checkLogin($username, $password)
         {
             $query = "SELECT * FROM logins WHERE username = ?";
@@ -42,6 +96,7 @@
             if (! empty($queryResult)) {
                 if (password_verify($password, $queryResult[0]["password"])) {
                     $_SESSION["login"] = $queryResult[0]["username"];
+                    $_SESSION["session-id"] = $this->createSession($queryResult[0]["username"]);
                     return true;
                 }
             }
@@ -68,6 +123,22 @@
                     return $this->checkLogin($username, $new_password);
                 }
             }
+        }
+
+        public function generateToken($username)
+        {
+            $token = $this->generate_secure_random_string(32);
+            $tokenHash = password_hash($token, PASSWORD_DEFAULT);
+
+            $query = "UPDATE logins SET token = ? WHERE username = ?";
+            $paramType = "ss";
+            $paramArray = array(
+                $tokenHash,
+                $username
+            );
+
+            $this->ds->execute($query, $paramType, $paramArray);
+            return $token;
         }
 
         public function addLogin($username, $password)

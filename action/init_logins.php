@@ -7,8 +7,8 @@
 
     require_once ("../src/locked/class/admin.php");
 
-    $username = "doncato";
-    $password = "doncato";
+    $username = "minerjo";
+    $password = "Hochhausweg";
 
     $auth = new Admin();
     $r = $auth->addLogin($username, $password);

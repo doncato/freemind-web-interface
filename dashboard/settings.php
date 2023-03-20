@@ -7,6 +7,10 @@
 
     if (!empty($_SESSION["login"])) {
         $name = $_SESSION["login"];
+
+        require_once("../src/locked/class/admin.php");
+        $auth = new Admin();
+        $auth->extendSettion($_SESSION["login"], $_SESSION["session-id"]);
     } else {
         header("Location: ../index.php");
         exit();
@@ -51,8 +55,22 @@
                     <button class="btn btn-danger" type="submit">Change</button>
                 </div>
             </form> 
+            <h4>Generate Token</h4>
+            <p>
+                This will re-generate your personal access token which can be used as
+                a login method for third-party applications.<br> Be sure to store it securely,
+                as it will only be visible once and grants access to your whole account.<br>
+                Your old token will be invalid afterwards.<br>
+                (Note: The clear button will only clear the text field and will not unvalidate the token.)
+            </p>
+            <div class="input-group">
+                <input type="text" id="token-field" class="form-control" name="token" value="" placeholder="Your token will be shown here" readonly>
+                <button type="button" class="btn btn-outline-secondary" onclick="clear_token()">Clear</button>
+                <button type="button" class="btn btn-danger" onclick="generate_token()">Generate</button>
+            </div>
         </div>
     </div>
+        <script src="../src/settings-script.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
     </body>
 </html>

@@ -1,6 +1,5 @@
 <?php
     namespace App;
-
     use \App\Admin;
 
     if (!empty($_POST["username"]) && !empty($_POST["password"])) {
