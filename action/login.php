@@ -20,6 +20,8 @@
     }
 
     if (!empty($_SESSION["login"])) {
+        //echo $_SESSION["login"];
+        //echo $_SESSION["session-id"];
         header("Location: ../dashboard.php");
     } else {
         header("Location: ../index.php");

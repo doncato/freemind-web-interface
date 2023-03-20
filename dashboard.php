@@ -8,9 +8,9 @@
     if (!empty($_SESSION["login"])) {
         $name = $_SESSION["login"];
         
-        require_once("../src/locked/class/admin.php");
+        require_once("./src/locked/class/admin.php");
         $auth = new Admin();
-        $auth->extendSettion($_SESSION["login"], $_SESSION["session-id"]);
+        $auth->extendSession($_SESSION["login"], $_SESSION["session-id"]);
     } else {
         header("Location: ./index.php");
         exit();

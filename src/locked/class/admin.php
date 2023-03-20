@@ -39,7 +39,7 @@
                 $expires,
             );
             $queryResult = $this->ds->insert($query, $paramType, $paramArray);
-            return $queryResult;
+            return $session_id;
         }
 
         public function extendSession($username, $session_id)

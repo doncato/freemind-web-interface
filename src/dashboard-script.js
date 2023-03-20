@@ -65,7 +65,7 @@ function addNew() {
             "priority": priority,
             "rigid": rigid,
         }
-        httpGet("./api/fetch.php", insertNew, next);
+        httpGet("./action/fetch.php", insertNew, next);
 
         addNewClear();
     }
@@ -132,14 +132,14 @@ function insertNew(xml, next) {
         }
         regis.appendChild(nextEle)
 
-        httpPost("./api/update.php", doc, true);
+        httpPost("./action/update.php", doc, true);
     }
 }
 
 // END ADD NEW
 // START DELETE ENTRY
 function deleteEntry(obj) {
-    httpGet("./api/fetch.php", removeEntry, obj.id);
+    httpGet("./action/fetch.php", removeEntry, obj.id);
 }
 
 function removeEntry(xml, id) {
@@ -154,7 +154,7 @@ function removeEntry(xml, id) {
             }
         }
 
-        httpPost("./api/update.php", doc, true);
+        httpPost("./action/update.php", doc, true);
     }
 }
 // END DELETE ENTRY
@@ -183,7 +183,7 @@ function httpPost(reqURL, payload, update) {
             if (xhr.status === 200) {
                 console.log("Another Success");
                 if (update) {
-                    httpGet("./api/fetch.php", mapOutcome);
+                    httpGet("./action/fetch.php", mapOutcome);
                 }
             } else {
                 console.error(xhr.statusText);
@@ -227,6 +227,6 @@ function mapOutcome(xml, waisted) { // Because I'm stupid & tired
 
 
 // Launch on Load
-httpGet("./api/fetch.php", mapOutcome);
+httpGet("./action/fetch.php", mapOutcome);
 // Update the year of the addNew form
 insertYearMin();
