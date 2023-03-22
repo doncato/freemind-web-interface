@@ -14,11 +14,11 @@
             )
         );
         $context = stream_context_create($options);
-        try {
-            echo file_get_contents($url, false, $context);
-        } catch (Exception $e) {
-            echo "<?xml version=\"1.0\" encoding=\"UTF-8\"?><registry version=\"1.0\"></registry>";
+        $ctx = file_get_contents($url, false, $context);
+        if (!$ctx) {
+            $ctx = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><registry version=\"1.0\"></registry>";
         }
+        echo $ctx;
     } else {
         http_response_code(401);
         header("Content-Type: text/plain");
