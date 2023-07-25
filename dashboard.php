@@ -10,7 +10,7 @@
         
         require_once("./src/locked/class/admin.php");
         $auth = new Admin();
-        $auth->extendSession($_SESSION["login"], $_SESSION["session-id"]);
+        $auth->extendSession($_SESSION["id"], $_SESSION["session-id"]);
     } else {
         header("Location: ./index.php");
         exit();
@@ -31,6 +31,11 @@
                 <li class="nav-item">
                     <a class="nav-link" href="./dashboard.php">Home</a>
                 </li>
+                <?php
+                if ($_SESSION["login"] == ADMIN) {
+                    echo "<li class=\"nav-item\"><a class=\"nav-link\" href=\"./dashboard/admin-tools.php\">Admin Tools</a></li>";
+                }
+                ?>
                 <li class="nav-item">
                     <a class="nav-link" href="./dashboard/settings.php">Settings</a>
                 </li>

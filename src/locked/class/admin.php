@@ -1,6 +1,8 @@
 <?php
     namespace App;
 
+    define("ADMIN", "doncato");
+
     use App\DataSource;
 
     class Admin
@@ -15,6 +17,28 @@
             $this->ds = new DataSource();
         }
 
+        function does_id_exist($id)
+        {
+            $query = "SELECT 1 FROM logins WHERE id = ?";
+            $paramType = "i";
+            $paramArray = array(
+                $id
+            );
+            $queryResult = $this->ds->execute($query, $paramType, $paramArray);
+            return mysqli_num_rows($queryResult) > 0;
+        }
+
+        function does_username_exist($username)
+        {
+            $query = "SELECT 1 FROM logins WHERE username = ?";
+            $paramType = "s";
+            $paramArray = array(
+                $username
+            );
+            $queryResult = $this->ds->execute($query, $paramType, $paramArray);
+            return mysqli_num_rows($queryResult) > 0;
+        }
+
         function generate_secure_random_string($length)
         {
             $random_string = '';
@@ -26,15 +50,15 @@
             return $random_string;
         }
         
-        public function createSession($username)
+        public function createSession($id)
         {
             $session_id = $this->generate_secure_random_string(18);
             $expires = date('c', time()+(15*60));
 
-            $query = "INSERT INTO sessions (username, session, expires) VALUES (?,?,?)";
+            $query = "INSERT INTO sessions (id, session, expires) VALUES (?,?,?)";
             $paramType = "sss";
             $paramArray = array(
-                $username,
+                $id,
                 $session_id,
                 $expires,
             );
@@ -42,27 +66,27 @@
             return $session_id;
         }
 
-        public function extendSession($username, $session_id)
+        public function extendSession($id, $session_id)
         {
             $expires = date('c', time()+(15*60));
 
-            $query = "UPDATE sessions SET expires = ? WHERE username = ? AND session = ?";
+            $query = "UPDATE sessions SET expires = ? WHERE id = ? AND session = ?";
             $paramType = "sss";
             $paramArray = array(
                 $expires,
-                $username,
+                $id,
                 $session_id,
             );
             $queryResult = $this->ds->execute($query, $paramType, $paramArray);
             return $queryResult;
         }
 
-        public function deleteSession($username, $session_id)
+        public function deleteSession($id, $session_id)
         {
-            $query = "DELETE FROM sessions WHERE username = ? AND session = ?";
+            $query = "DELETE FROM sessions WHERE id = ? AND session = ?";
             $paramType = "ss";
             $paramArray = array(
-                $username,
+                $id,
                 $session_id,
             );
             $queryResult = $this->ds->execute($query, $paramType, $paramArray);
@@ -96,7 +120,8 @@
             if (! empty($queryResult)) {
                 if (password_verify($password, $queryResult[0]["password"])) {
                     $_SESSION["login"] = $queryResult[0]["username"];
-                    $_SESSION["session-id"] = $this->createSession($queryResult[0]["username"]);
+                    $_SESSION["id"] = $queryResult[0]["id"];
+                    $_SESSION["session-id"] = $this->createSession($queryResult[0]["id"]);
                     return true;
                 }
             }
@@ -143,27 +168,44 @@
 
         public function addLogin($username, $password)
         {
+            $succ = false;
+            //$id = random_int(1, 2147483646);
+            $id = 0;
+            for ($i = 0; $i < 1000; $i++) {
+                if (!$this->does_id_exist($id)) {
+                    $succ = true;
+                    break;
+                } else {
+                    $id = random_int(1, 2147483646);
+                }
+            }
+            if ($this->does_username_exist($username)) {
+                $succ = false;
+            }
+            if (!$succ) {
+                return false;
+            }
             $passwordHash = password_hash($password, PASSWORD_DEFAULT);
-            $query = "INSERT INTO logins (username, password) VALUES (?, ?)";
-            $paramType = "ss";
+            $query = "INSERT INTO logins (username, password, token, id) VALUES (?, ?, ?, ?)";
+            $paramType = "sssi";
             $paramArray = array(
                 $username,
-                $passwordHash
+                $passwordHash,
+                password_hash($this->generate_secure_random_string(32), PASSWORD_DEFAULT),
+                $id
             );
             $queryResult = $this->ds->insert($query, $paramType, $paramArray);
-            return $queryResult;
+            return $queryResult == 0;
         }
 
-        public function removeLogin($username, $password)
+        public function removeLogin($username)
         {
-            $passwordHash = password_hash($password, PASSWORD_DEFAULT);
-            $query = "DELETE FROM logins WHERE username = ? AND password = ?";
-            $paramType = "ss";
+            $query = "DELETE FROM logins WHERE username = ?";
+            $paramType = "s";
             $paramArray = array(
-                $username,
-                $passwordHash
+                $username
             );
-            $queryResult = $this->ds->execute($query, $paramType, $paramArray);
-            return $queryResult;
+            $queryResult = $this->ds->insert($query, $paramType, $paramArray);
+            return $queryResult == 0;
         }
     }

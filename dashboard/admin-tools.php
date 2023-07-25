@@ -9,6 +9,9 @@
         $name = $_SESSION["login"];
 
         require_once("../src/locked/class/admin.php");
+        if ($_SESSION["login"] != ADMIN) {
+            header("Location: ../dashboard.php");
+        }
         $auth = new Admin();
         $auth->extendSession($_SESSION["id"], $_SESSION["session-id"]);
     } else {
@@ -51,28 +54,23 @@
             </ul>
         </nav>
         <div class="container">
-            <h4>Change Password</h4>
-            <form action="../action/change_password.php" method='post' class='needs-validation'>
+            <h4>Create User</h4>
+            <form action="../action/create_user.php" method='post' class='needs-validation'>
                 <div class="input-group">
-                    <input type="text" class="form-control" name="username" value="<?php echo $name;?>" readonly>
-                    <input type="password" class="form-control <?php echo $invalid; ?>" placeholder="Old Password" name="old_pass">
-                    <input type="password" class="form-control <?php echo $invalid; ?>" placeholder="New Password" name="new_pass">
-                    <button class="btn btn-danger" type="submit">Change</button>
+                    <input type="text" class="form-control <?php echo $invalid; ?>" name="new_login" placeholder="Username">
+                    <input type="password" class="form-control <?php echo $invalid; ?>" placeholder="Password" name="new_pass">
+                    <button class="btn btn-danger" type="submit">Create</button>
                 </div>
             </form> 
-            <h4>Generate Token</h4>
-            <p>
-                This will re-generate your personal access token which can be used as
-                a login method for third-party applications.<br> Be sure to store it securely,
-                as it will only be visible once and grants access to your whole account.<br>
-                Your old token will be invalid afterwards.<br>
-                (Note: The clear button will only clear the text field and will not unvalidate the token.)
-            </p>
-            <div class="input-group">
-                <input type="text" id="token-field" class="form-control" name="token" value="" placeholder="Your token will be shown here" readonly>
-                <button type="button" class="btn btn-outline-secondary" onclick="clear_token()">Clear</button>
-                <button type="button" class="btn btn-danger" onclick="generate_token()">Generate</button>
-            </div>
+        </div>
+        <div class="container">
+            <h4>Delete User</h4>
+            <form action="../action/delete_user.php" method='post' class='needs-validation'>
+                <div class="input-group">
+                    <input type="text" class="form-control" name="login" placeholder="Username">
+                    <button class="btn btn-danger" type="submit">Delete</button>
+                </div>
+            </form> 
         </div>
     </div>
         <script src="../src/settings-script.js"></script>
