@@ -1,0 +1,13 @@
+:root {
+    --color-primary:   	#b2b4b3;
+    --color-secondary: 	#616365;
+    --color-accent:    	#cd202c;
+    --color-shade:    	#363534;
+    --color-bg:       	#1e1e1e;
+}
+
+
+html, body {
+    color: var(--color-primary);
+    background-color: var(--color-bg);
+}
