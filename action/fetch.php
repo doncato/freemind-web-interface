@@ -5,7 +5,7 @@
 
     session_start();
     if (!empty($_SESSION["login"]) && !empty($_SESSION["session-id"])) {
-        $url = "http://localhost:8008/v1/xml/fetch";
+        $url = "http://localhost:8008/xml/fetch";
         $options = array(
             "http" => array(
                 "header" => "user: ".$_SESSION["login"]."\r\nsession: ".$_SESSION["session-id"]."\r\n",

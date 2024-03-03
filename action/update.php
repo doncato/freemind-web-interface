@@ -5,7 +5,7 @@
     
     session_start();
     if (!empty($_SESSION["login"]) && !empty($_SESSION["session-id"])) {
-        $url = "http://localhost:8008/v1/xml/update";
+        $url = "http://localhost:8008/xml/update";
         $payload = file_get_contents("php://input");
         $options = array(
             "http" => array(

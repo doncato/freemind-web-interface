@@ -4,9 +4,9 @@
     class DataSource
     {
         private const HOST = 'localhost';
-        private const USER = 'webapp';
-        private const PASS = 'developingPHP';
-        private const DBNM = 'webapp_db';
+        private const USER = 'freeadmin';
+        private const PASS = 'admind';
+        private const DBNM = 'freemind';
 
         private $conn;
 
